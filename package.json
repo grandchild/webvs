@@ -26,6 +26,7 @@
     "url": "https://github.com/azeem/webvs/issues"
   },
   "dependencies": {
+    "@visbot/webvsc": "^2.2.1",
     "eventemitter3": "^3.0.1",
     "lodash-es": "^4.17.8",
     "stats.js": "*"

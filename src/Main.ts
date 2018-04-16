@@ -1,6 +1,7 @@
 import defaults from "lodash-es/defaults";
 import pick from "lodash-es/pick";
 import Stats from "stats.js";
+import {convertBlob} from '@visbot/webvsc/browser';
 import AnalyserAdapter from "./analyser/AnalyserAdapter";
 import builtinResourcePack from "./builtinResourcePack";
 import Component from "./Component";
@@ -221,6 +222,26 @@ export default class Main extends Model implements IMain {
         this.meta = Object.assign({}, preset.meta);
 
         this._setupRoot(preset);
+    }
+
+    /**
+     * Loads a legacy .avs binary preset into this webvs main instance.
+     *
+     * @param presetData an ArrayBuffer of the contents of the .avs file. The
+     * binary data will be decoded by webvsc, the converter library, and the
+     * resulting preset object will be loaded by `loadPreset()`.
+     */
+    public loadBinaryPreset(presetData: ArrayBuffer): any {
+        let conversionArgs = {
+            "quiet": true,
+            "hidden": false
+        };
+        let preset = convertBlob(presetData, "", "", conversionArgs);
+        if (typeof preset.components === "undefined") {
+            throw new Error("Failed to load binary preset");
+        }
+        this.loadPreset(preset);
+        return preset;
     }
 
     /**
