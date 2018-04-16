@@ -51,6 +51,22 @@ function loadPresetHandler(event) {
     webvsMain.loadPreset(preset);
 }
 
+function loadBinaryPresetHandler(event) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        presetData = e.target.result;
+        try {
+            presetObj = webvsMain.loadBinaryPreset(presetData)
+            editor.getDoc().setValue(JSON.stringify(presetObj, null, 2));
+        } catch(e) {
+            window.alert('File is not a valid AVS preset');
+            return;
+        }
+        webvsMain.loadPreset(presetData);
+    };
+    reader.readAsArrayBuffer(event.target.files[0]);
+}
+
 function changeTrackHandler(event, id, noAutoPlay) {
     var trackSelect = document.getElementById('track-select');
     if(id === undefined) {
@@ -76,7 +92,10 @@ function initButtons() {
     loadExampleBtn.addEventListener('click', loadExampleHandler);
 
     var loadPresetBtn = document.getElementById('load-preset-btn');
-    loadPresetBtn.addEventListener('click', loadPresetHandler)
+    loadPresetBtn.addEventListener('click', loadPresetHandler);
+    
+    var loadBinaryPresetBtn = document.getElementById('load-bin-preset-btn');
+    loadBinaryPresetBtn.addEventListener('change', loadBinaryPresetHandler);
 
     var changeTrackBtn = document.getElementById('change-track-btn');
     changeTrackBtn.addEventListener('click', changeTrackHandler);
